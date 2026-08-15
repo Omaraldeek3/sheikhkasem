@@ -1,0 +1,229 @@
+@import "tailwindcss";
+
+@theme {
+  /* ——— الأرضية: سمّاق مطحون. أسود دافئ يميل للأحمر، ليس رمادياً محايداً ——— */
+  --color-sumac-950: #1B0C0E;
+  --color-sumac-900: #2A1214;
+  --color-sumac-800: #37191B;
+  --color-sumac-700: #4A2325;
+
+  /* ——— حجر القدس: أبيض دافئ مائل للرمادي، ليس كريمياً ——— */
+  --color-stone-50: #EFE7D8;
+  --color-stone-200: #CFC4AE;
+  --color-stone-400: #A99C86;
+  --color-stone-600: #7A6E5C;
+
+  /*
+   * ——— أحمر الشيخ قاسم ———
+   * brand      #EA1C2D  اللون المأخوذ من الشعار نفسه. للشعار والمساحات والخطوط.
+   * brand-deep #C8101F  لخلفيات الأزرار، ليجتاز النص الأبيض تباين AA (5.9:1).
+   * brand-lite #FF7A82  للنص والروابط فوق الأرضية الداكنة (7:1).
+   */
+  --color-brand: #EA1C2D;
+  --color-brand-deep: #C8101F;
+  --color-brand-lite: #FF7A82;
+
+  /* ——— طيف الأصناف: كل لون مشتق من المادة نفسها ——— */
+  --color-turmeric: #E0A32A;
+  --color-lentil: #7E8B4A;
+  --color-zaatar: #46613F;
+  --color-mahlab: #D8C79A;
+  --color-molasses: #7A2233;
+  --color-almond: #96703F;
+  --color-apricot: #C4562B;
+
+  --font-display: var(--font-reem), system-ui, sans-serif;
+  --font-body: var(--font-plex), system-ui, sans-serif;
+  --font-naskh: var(--font-amiri), Georgia, serif;
+
+  --radius-sm: 3px;
+  --radius-md: 5px;
+}
+
+@layer base {
+  * {
+    border-color: color-mix(in oklab, var(--color-stone-400) 14%, transparent);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--color-sumac-900);
+    color: var(--color-stone-50);
+    font-family: var(--font-body);
+    font-feature-settings: "kern";
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* عنوان بخط كوفي — يحتاج تتبعاً أوسع قليلاً وارتفاع سطر منخفض */
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    line-height: 1.15;
+    font-weight: 600;
+  }
+
+  ::selection {
+    background-color: var(--color-brand);
+    color: #fff;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand-lite);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* الأرقام اللاتينية داخل نص عربي تبقى بترتيبها الصحيح */
+  .num {
+    direction: ltr;
+    unicode-bidi: isolate;
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  /* ——— التسمية العلوية: أداة بنيوية تُستخدم في كل قسم ——— */
+  .eyebrow {
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    color: var(--color-stone-400);
+    text-transform: none;
+  }
+
+  /* ——— حبيبات: نسيج المطحنة. طبقة واحدة خفيفة جداً ——— */
+  .grain {
+    position: relative;
+  }
+  .grain::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: 0.5;
+    background-image: radial-gradient(
+      color-mix(in oklab, var(--color-stone-400) 22%, transparent) 0.5px,
+      transparent 0.5px
+    );
+    background-size: 4px 4px;
+    mix-blend-mode: overlay;
+  }
+
+  .rule {
+    height: 1px;
+    background: linear-gradient(
+      to left,
+      color-mix(in oklab, var(--color-stone-400) 34%, transparent),
+      transparent
+    );
+  }
+
+  /* ——— الأزرار: تعريف واحد بدل تكرار الأصناف في كل صفحة ——— */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1;
+    /* 44px حد أدنى لمساحة اللمس على الهواتف */
+    min-height: 2.75rem;
+    padding: 0.75rem 1.5rem;
+    transition:
+      background-color 200ms,
+      border-color 200ms,
+      color 200ms;
+  }
+
+  .btn-primary {
+    background-color: var(--color-brand-deep);
+    color: #fff;
+  }
+  .btn-primary:hover {
+    background-color: var(--color-brand);
+  }
+
+  .btn-ghost {
+    border: 1px solid color-mix(in oklab, var(--color-stone-400) 25%, transparent);
+    color: var(--color-stone-200);
+  }
+  .btn-ghost:hover {
+    border-color: color-mix(in oklab, var(--color-stone-400) 50%, transparent);
+    color: var(--color-stone-50);
+  }
+
+  /* شعار الشركة أحمر على أبيض — يُعرض على رقعة بيضاء كما على العبوة */
+  .logo-chip {
+    background-color: #fff;
+    border-radius: var(--radius-sm);
+  }
+}
+
+/* ——— حركة واحدة منسّقة عند التحميل، لا مؤثرات متفرقة ——— */
+@keyframes band-grow {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-band {
+  transform-origin: right center;
+  animation: band-grow 1100ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-rise {
+  animation: rise 720ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* عنصر يظهر عند التمرير */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 700ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 700ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal[data-shown="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+}

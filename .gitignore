@@ -1,0 +1,14 @@
+node_modules
+.next
+out
+build
+.DS_Store
+*.pem
+npm-debug.log*
+.env*
+next-env.d.ts
+tsconfig.tsbuildinfo
+
+# الصور الأصلية كما نُزّلت من الموقع القديم (~19MB) — المصدر لسكربت
+# scripts/prepare-images.mjs. النسخ الجاهزة للويب موجودة في public/
+.scratch
