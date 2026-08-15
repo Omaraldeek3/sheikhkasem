@@ -1,0 +1,62 @@
+# يبني الموقع كملفات ثابتة وينشره على GitHub Pages عند كل دفع إلى main.
+name: نشر على GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # يسمح بالتشغيل يدوياً من تبويب Actions
+  workflow_dispatch:
+
+# الصلاحيات التي يحتاجها النشر على Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# نشرة واحدة في الوقت نفسه، ولا تُلغى نشرة جارية
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: بناء التصدير الثابت
+        env:
+          # يفعّل basePath و assetPrefix ومحمّل الصور، لأن الموقع يُخدم
+          # داخل مجلد فرعي: omaraldeek3.github.io/sheikhkasem/
+          NEXT_PUBLIC_BASE_PATH: /sheikhkasem
+        run: npm run build
+
+      - name: تحقق أن الأصول والصور تحمل البادئة
+        run: |
+          test -f out/.nojekyll || { echo "خطأ: .nojekyll مفقود، Jekyll سيتجاهل _next"; exit 1; }
+          grep -q '/sheikhkasem/_next/static' out/index.html || { echo "خطأ: أصول بلا بادئة"; exit 1; }
+          grep -q 'src="/sheikhkasem/logo-lockup.webp"' out/index.html || { echo "خطأ: صور بلا بادئة"; exit 1; }
+          echo "سليم: $(find out -name '*.html' | wc -l) صفحة"
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
